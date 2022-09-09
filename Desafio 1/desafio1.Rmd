@@ -1,0 +1,113 @@
+---
+title: "Desafio I - Processos Pontuais"
+subtitle: "Estatística Espacial I"
+author: "Aluno: Bruno de Oliveira Alves."
+date: "09/12/2021"
+output: 
+  rmdformats::readthedown:
+    use_bookdown: true  
+    fig_caption: true
+  html_document: 
+    fig_height: 10
+    fig_width: 12.5
+editor_options: 
+  chunk_output_type: console
+css: custom.css
+---
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE,
+                      echo = FALSE,
+                      include = FALSE)
+
+htmltools::img(src = knitr::image_uri("logoUffAzulTransparente.png"), 
+               alt = 'logo', 
+               style = 'position:absolute; top:10px; right:0; padding:5px;width: 150px; height: 80px')
+
+library(spatstat)
+library(splancs)
+
+data("shapley")
+#setwd("C:/Users/rafae/Dropbox/UFF/LES/ASSESSORIAS/2021/Mariana Seglia - Fiocruz/Atendimento LES - Mariana/Shape")
+```
+
+
+<div style="text-align: justify">
+
+# Objetivo
+
+  Florestas mistas, são florestas que combinam árvores frondosas com folhas e árvoras com folhas aciculares, como as coníferas. Eles geralmente existem em regiões temperadas e representam uma zona de transição entre florestas caducifólias temperadas e florestas de coníferas.
+  No continente americano podemos encontrar numerosas florestas mistas. Na região dos Grandes Lagos, na América do Norte, as florestas mistas são formadas por árvores de folha caduca como o plátano e a faia e árvores coníferas, como pinheiros e tuia. Os Apalaches também combinam abetos, plátanos e outras árvores.
+  A Europa, por sua vez, hospeda florestas mistas com abetos, bétulas, faias e outras espécies. A floresta mista dos Balcãs, a floresta mista da Cantábria, a floresta mista do Cáucaso e a floresta mista atlântica são algumas dessas florestas.
+  Nesse presente estudo, foi utilizado a base dados *urkiola* do pacote `spatstat`, nessa base temos a localização bétulas e carvalhos em uma floresta secundária no Parque Natural de Urkiola (País Basco, Espanha do norte). Foi usado o método de análise processos pontuais (Padrões de Pontos), a fim de verificar se existe padrões ou **clusters** espaciais associados a posição de cada galáxia.
+
+# Análises exploratórias: X {.tabset .tabset-fade .tabset-pills}
+  
+  Nesse estudo vamos utilizar o método de análise de processos pontuais (Padrões de Pontos), então iremos avaliar a intensidade de ocorrência destes eventos. Esse processo pode ser descrito em termos de efeitos de 1° ordem  e efeitos de 2° ordem.
+  Os efeitos de 1° ordem são considerados efeitos de larga escala ou globais. Nesses efeitos estamos interessados no número de eventos por unidade de área, ou seja, a intensidade do processo.
+  Os efeitos de 2° ordem, são os efeitos de pequena escala ou locais, eles representam
+a dependência espacial no processo, proveniente da estrutura de correlação espacial.
+  Na *Figura 2.1* podemos observar o gráfico de pontos da base de dados *urkiola*, nele podemos notar que a base possui um padrão de pontos bivariado, além disso, nota-se que os dados parecem ser um padrão de pontos do tipo *agregação espacial*, nos próximos passos desse estudo vamos verificar tal hipótese.
+
+
+```{r, fig.cap=paste("Análise de pontos da base shapley."), include=TRUE}
+
+plot(urkiola, cex=0.5, cols=2:3)
+
+
+
+```
+  
+
+
+# Análises do padrão de pontos {.tabset .tabset-fade .tabset-pills}
+  
+  Nesse cápitulo vamos comentar sobre as técnicas que serão usadas para analisar o tipos de padrão de pontos da base de estudo, por isso, dividiu-se esse cápitulo em duas partes, uma análises dos efeitos de primeira ordem e outra nos efeitos de segunda ordem.
+
+## Primeira ordem 
+  
+```{r include = FALSE, echo=FALSE}
+quadrantes1 <- quadratcount(urkiola,nx=4,ny=3) 
+t_quadrantes <- quadrat.test(bei,nx=4,ny=3) 
+# Índices
+media1 <- mean(quadrantes1)
+variancia1 <- sum((quadrantes1 - media1)^2/19)
+
+```
+
+  Para analisar os efeitos de primeira ordem, vamos utilizar o *Método dos Quadrantes*,  esse método consiste em, dividir a área em *D* quadrados, sobrepondo a área com uma grade, depois contamos o número de eventos dentro dentro de cada um dos quadrados da grade e por fim converte-se esse número em uma media de intensidade, dividindo-o pela área de seu respectivo quadrado. Na *Figura 3.1* é ilustrado o método dos quadrantes para a base *Urkiola*, com base no método dos quadrantes podemos verificar o tipo de padrão de pontos que temos nesse estudo, verifica- se que o *ICS = 26.25* aproximadamente, ou seja, temos um forte indicativo de aglomeração, por fim, podemos também avaliar o teste de quadrantes para avaliar a aleatóriedade dos pontos, então realizamos um teste similar ao teste qui-quadrado de aderência, onde nesse caso obtemos uma estatística $X^2 = 80.41$ que comparando com o valor do teste temos $X^2_{0.95, 10} = 18.30$, ou seja, rejeitamos a hipótese de
+aleatoriedade.
+  
+```{r include = TRUE, fig.cap=paste("Método dos Quadrantes aplicados na base Urkiola.")}
+plot(urkiola,pch=c(3,21))
+plot(quadrantes1,add=TRUE, col="red", cex=1.5, lty=2)
+
+
+```
+  Como não possuimos evidências de há aleatoriedade e, então, calculamos as intensidades, na *Figura 3.2* nos podemos visualizarmos essas intensidades e, evidenciarmos um padrão de aglomeração de pontos na nossa base, essas intensidades obtidas atráves da formúla:
+  $$\hat{\lambda} = \frac{x_i}{|Q|}, i = 1, \dots, m $$
+
+```{r include = TRUE, fig.cap=paste("Intensidade estimada.")}
+
+par(mar=c(0,0,0,2))
+plot(intensity(quadrantes1, image=TRUE), main="", 
+     col=terrain.colors(256))
+
+
+```
+
+## Segunda Ordem
+
+   Para calcularmos os efeitos de segunda ordem vamos utilizar o método do vizinho mais próximo, esse método nos permite estimar o grau de dependência espacial do processo estudado.
+   Nesse método estamos interessados em 2 tipos de distâncias, uma entre o evento escolhido aleatoriamente e o evento vizinho mais próximo $(W)$ e outra o ponto escolhido aleatoriamente e o evento vizinho mais próximo $(X)$.
+   Para investigar o grau de dependência espacial deste processo, vamos examinar a distribuição empírica de $W$ e $X$, onde $\hat{G}(w)$ é a função empírica de $W$ e $\hat{F}(x)$ é a de $X$.
+   
+```{r include = TRUE}
+
+
+```
+
+
+# Conclusão 
+  

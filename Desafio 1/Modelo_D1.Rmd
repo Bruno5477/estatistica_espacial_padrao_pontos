@@ -1,0 +1,84 @@
+---
+title: "Desafio I - Processos Pontuais"
+subtitle: "Estatística Espacial I"
+author: "Aluno: XXXXXXXX."
+date: "18/11/2021"
+output: 
+  rmdformats::readthedown:
+    use_bookdown: true  
+    fig_caption: true
+  html_document: 
+    fig_height: 10
+    fig_width: 12.5
+editor_options: 
+  chunk_output_type: console
+css: custom.css
+---
+
+```{r echo=FALSE, warning=FALSE}
+knitr::opts_chunk$set(message = FALSE,
+                      warning = FALSE,
+                      echo = FALSE,
+                      include = FALSE)
+
+htmltools::img(src = knitr::image_uri("logoUffAzulTransparente.png"), 
+               alt = 'logo', 
+               style = 'position:absolute; top:10px; right:0; padding:5px;width: 150px; height: 80px')
+
+library(pacman)
+p_load(char = c("kableExtra", 
+                "foreign",
+                "tidyverse",
+                "readxl",
+                "lubridate",
+                "sf",
+                "tmap",
+                "ggplot2")) 
+
+#setwd("C:/Users/rafae/Dropbox/UFF/LES/ASSESSORIAS/2021/Mariana Seglia - Fiocruz/Atendimento LES - Mariana/Shape")
+```
+
+<div style="text-align: justify">
+
+# Objetivo
+
+  A descoberta das galáxias como sistemas exteriores a Via Lactea aconteceu no ano 1923, como conseqüência das pesquisas realizadas por Eddwin Hubble com o telescópio de 2.5 de Mount Wilson, Califórnia, Estados Unidos. Anteriormente todos os objetos extensos, galáxias, aglomerados estelares, nebulosas planetárias eram classificadas como nebulosas.
+  Até 1908, cerca de 15 000 nebulosas haviam sido catalogadas e descritas. Algumas haviam sido corretamente identificadas como aglomerados estelares, e outras como nebulosas gasosas.
+  Em 1923 Edwin Powell Hubble (1889-1953) proporcionou a evidência definitiva para considerar as "nebulosas espirais" como galáxias independentes, ao identificar uma variável Cefeída na "nebulosa" de Andrômeda (M31).
+  Nesse presente estudo, foi utilizado a base dados *shapley* do pacote `spatstat`, essa base possui a posição no céu de 4215 galáxias que foram mapeadas por radioastronomia, nela também estão marcados a magnitude, recessão e SE dessas galáxias.
+
+# Análises exploratórias: X {.tabset .tabset-fade .tabset-pills}
+
+
+
+```{r}
+
+
+```
+
+## Parte I 
+
+```{r include = TRUE}
+
+
+```
+
+
+
+## Parte II
+
+```{r include = TRUE}
+
+
+```
+
+
+
+
+# Análise Y {.tabset .tabset-fade .tabset-pills}
+
+```{r include = TRUE}
+
+```
+
+
